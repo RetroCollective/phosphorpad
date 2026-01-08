@@ -208,18 +208,6 @@ span {
     darkGreenTheme.ScrollbarThumbHoverColor = '#438605';
     options.Themes.push(darkGreenTheme);
 
-    const darkBlueTheme = new Theme();
-    darkBlueTheme.Name = "DarkBlue"
-    darkBlueTheme.BackgroundColor = '#02001f';
-    darkBlueTheme.MainColor = '#0e00d3';
-    darkBlueTheme.MainColorShadow1 = '#090083';
-    darkBlueTheme.MainColorShadow2 = '#080075';
-    darkBlueTheme.MainColorShadow3 = '#070066';
-    darkBlueTheme.MainColorShadow4 = '#050052';
-    darkBlueTheme.ScrollbarThumbColor = '#06005f';
-    darkBlueTheme.ScrollbarThumbHoverColor = '#090086';
-    options.Themes.push(darkBlueTheme);
-
     const midnightBlueTheme = new Theme();
     midnightBlueTheme.Name = "MidnightBlue"
     midnightBlueTheme.BackgroundColor = '#080077';
@@ -231,18 +219,6 @@ span {
     midnightBlueTheme.ScrollbarThumbColor = '#3c2eff';
     midnightBlueTheme.ScrollbarThumbHoverColor = '#685dff';
     options.Themes.push(midnightBlueTheme);
-
-    const darkRedTheme = new Theme();
-    darkRedTheme.Name = "DarkRed"
-    darkRedTheme.BackgroundColor = '#3a0000';
-    darkRedTheme.MainColor = '#d80000';
-    darkRedTheme.MainColorShadow1 = '#cc0000';
-    darkRedTheme.MainColorShadow2 = '#b40000';
-    darkRedTheme.MainColorShadow3 = '#970000';
-    darkRedTheme.MainColorShadow4 = '#720000';
-    darkRedTheme.ScrollbarThumbColor = '#970000';
-    darkRedTheme.ScrollbarThumbHoverColor = '#d80000';
-    options.Themes.push(darkRedTheme);
 
     const characterCountRegex = /\S/g;
     const wordCountRegex = /\s/g;
@@ -265,6 +241,14 @@ span {
     var showOptions = false;
 
     var buttonSave;
+
+    
+    window.addEventListener('beforeunload', e => {
+        if(textModified) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 
     function initializeElements() {
         textarea = document.getElementById("main-textarea");
@@ -315,9 +299,9 @@ span {
     function setModified(modified){
         textModified = modified;
         if(modified==true){
-            buttonSave.innerText = "SAVE*";
+            buttonSave.innerText = "SAVE FILE*";
         } else {
-            buttonSave.innerText = "SAVE";
+            buttonSave.innerText = "SAVE FILE";
         }
     }
 
@@ -342,6 +326,10 @@ span {
     }
 
     async function showNewFileDialog() {
+        if(textModified && confirm("You have unsaved changes, do you really wan't to create a new file?") == false) {
+            return;
+        }
+
         fileHandle = await window.showSaveFilePicker();
         file = await fileHandle.getFile();
         textarea.value = await file.text();
@@ -359,6 +347,13 @@ span {
     }
 
     async function saveFile() {
+        if(fileHandle == null) {
+            fileHandle = await window.showSaveFilePicker();
+            file = await fileHandle.getFile();
+            filenamespan.textContent = file.name;
+            setModified(false);
+        }
+
         await writeFile(fileHandle, textarea.value);
     }
 
@@ -389,14 +384,14 @@ span {
             <span id="status-lines-count-label" class="glow">LINES:</span>
             <span id="status-lines-count-value" class="glow">0</span>
             <span>&nbsp;</span>
-            <span id="status-file-label" class="glow">FILE:</span>
+            <span id="status-file-label" class="glow">FILENAME:</span>
             <span id="status-file-name" class="glow">...</span>
             <span>&nbsp;</span>
-            <button id="button-new" class="button glow" onclick="showNewFileDialog()">NEW</button>
+            <button id="button-new" class="button glow" onclick="showNewFileDialog()">NEW FILE</button>
             <span>&nbsp;</span>
-            <button id="button-open" class="button glow" onclick="showOpenFileDialog()">OPEN</button>
+            <button id="button-open" class="button glow" onclick="showOpenFileDialog()">OPEN FILE</button>
             <span>&nbsp;</span>
-            <button id="button-save" class="button glow" onclick="saveFile()">SAVE</button>
+            <button id="button-save" class="button glow" onclick="saveFile()">SAVE FILE</button>
             <span>&nbsp;</span>
             <button id="button-options" class="button glow" onclick="toggleOptionsPanelVisibility()">OPTIONS</button>
         </div>
@@ -408,8 +403,6 @@ span {
         <span id="options-content-theme-label" class="glow">THEME: </span>
         <button id="button-amber" class="button glow" onclick="setTheme(amberTheme)">AMBER</button>
         <button id="button-dark-green" class="button glow" onclick="setTheme(darkGreenTheme)">DARK GREEN</button>
-        <button id="button-dark-blue" class="button glow" onclick="setTheme(darkBlueTheme)">DARK BLUE</button>
-        <button id="button-dark-red" class="button glow" onclick="setTheme(darkRedTheme)">DARK RED</button>
         <button id="button-midnight-blue" class="button glow" onclick="setTheme(midnightBlueTheme)">MIDNIGHT BLUE</button>
         <br><br><br>
         <span id="options-content-flow-label" class="glow">GLOW: </span>
