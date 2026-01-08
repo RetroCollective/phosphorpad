@@ -326,7 +326,7 @@ span {
     }
 
     async function showNewFileDialog() {
-        if(textModified && confirm("You have unsaved changes, do you really wan't to create a new file?") == false) {
+        if(textModified && confirm("You have unsaved changes, do you really want to create a new file?") == false) {
             return;
         }
 
@@ -338,6 +338,10 @@ span {
     }
 
     async function showOpenFileDialog() {
+        if(textModified && confirm("You have unsaved changes, do you really want to open a new file?") == false) {
+            return;
+        }
+
         [fileHandle] = await window.showOpenFilePicker();
         file = await fileHandle.getFile();
         textarea.value = await file.text();
