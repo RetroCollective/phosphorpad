@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+:root {
+    --background-color: #221900;
+    --main-color: #FFBF00;
+    --main-color-shadow-1: #FFBF00;
+    --main-color-shadow-2: #f0b400;
+    --main-color-shadow-3: #e6ac00;
+    --main-color-shadow-4: #d6a100;
+    --scrollbar-thumb-color: #a07800;
+    --scrollbar-thumb-hover-color: #d6a100;
+
+    --test-theme-background-color: #3a0000;
+    --test-theme-main-color: #0e00d3;
+    --test-theme-main-color-shadow-1: #cc0000;
+    --test-theme-main-color-shadow-2: #b40000;
+    --test-theme-main-color-shadow-3: #970000;
+    --test-theme-main-color-shadow-4: #720000;
+    --test-theme-scrollbar-thumb-color: #970000;
+    --test-theme-scrollbar-thumb-hover-color: #d80000;
+
+    --shadow-from: 7px;
+    --shadow-to: 6px;
+    --shadow-multiplayer: 2;
+}
+
+body {
+  background-color: var(--background-color);
+  margin: 0px;
+  font: 1.3rem Inconsolata, monospace;
+  color: var(--main-color);
+}
+
+.glow {
+  animation: glow 5s ease-in-out infinite alternate;
+}
+
+textarea {
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--main-color);
+    resize: none;
+    height: 97vh;
+    width: 100vw;
+    border: none;
+    outline: none;
+    -webkit-box-sizing: border-box; 
+    -moz-box-sizing: border-box;    
+    box-sizing: border-box;
+}
+
+.main-container {
+    height: 100vh;
+    width: 100vw; 
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.options-container {
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    font-size: 0.8rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.options-content {
+    margin: 10px;
+    background-color: var(--background-color);
+    width: 500px;
+    border-style: double;
+    border-color: var(--main-color);
+}
+
+select {
+    appearance: none;
+    background-color: transparent;
+    color: var(--main-color);
+    border: var(--main-color);
+    padding: 0 1em 0 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: var(--background-color);
+    height: 30px;
+}
+
+.button {
+  transition-duration: 0.4s;
+  color: var(--main-color);
+  background-color: rgb(0,0,0,0);
+  border: none;
+  cursor: pointer;
+  font: 0.8rem Inconsolata, monospace;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+span {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.button:hover {
+  background-color: var(--main-color);
+  color: var(--background-color);
+}
+
+.status-container {
+    height: 2vh;
+    width: 100vw;
+    font-size: 0.8rem;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background:  var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover-color);
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 
+    0 0 calc(var(--shadow-from) * 1) var(--main-color-shadow-1), 
+    0 0 calc(var(--shadow-from) * 2) var(--main-color-shadow-2), 
+    0 0 calc(var(--shadow-from) * 3) var(--main-color-shadow-3), 
+    0 0 calc(var(--shadow-from) * 4) var(--main-color-shadow-4);
+  }
+  
+  to {
+    text-shadow: 
+    0 0 calc(var(--shadow-to) * 1) var(--main-color-shadow-1), 
+    0 0 calc(var(--shadow-to) * 2) var(--main-color-shadow-2),
+    0 0 calc(var(--shadow-to) * 3) var(--main-color-shadow-3), 
+    0 0 calc(var(--shadow-to) * 4) var(--main-color-shadow-4);
+  }
+
+  
+}
+</style>
+</head>
+<body onload="initializeElements();">
+    
+<script>
+    class Theme {
+        Name;
+        BackgroundColor;
+        MainColor;
+        MainColorShadow1;
+        MainColorShadow2;
+        MainColorShadow3;
+        MainColorShadow4;
+        ScrollbarThumbColor;
+        ScrollbarThumbHoverColor;
+    }
+
+    class Options {
+        Themes;
+    }
+
+    const options = new Options();
+    options.Themes = [];
+
+    const amberTheme = new Theme();
+    amberTheme.Name = "Amber"
+    amberTheme.BackgroundColor = '#221900';
+    amberTheme.MainColor = '#FFBF00';
+    amberTheme.MainColorShadow1 = '#FFBF00';
+    amberTheme.MainColorShadow2 = '#f0b400';
+    amberTheme.MainColorShadow3 = '#e6ac00';
+    amberTheme.MainColorShadow4 = '#d6a100';
+    amberTheme.ScrollbarThumbColor = '#a07800';
+    amberTheme.ScrollbarThumbHoverColor = '#d6a100';
+    options.Themes.push(amberTheme);
+
+    const darkGreenTheme = new Theme();
+    darkGreenTheme.Name = "DarkGreen"
+    darkGreenTheme.BackgroundColor = '#0e1b02';
+    darkGreenTheme.MainColor = '#4e9a06';
+    darkGreenTheme.MainColorShadow1 = '#438605';
+    darkGreenTheme.MainColorShadow2 = '#418006';
+    darkGreenTheme.MainColorShadow3 = '#3a7206';
+    darkGreenTheme.MainColorShadow4 = '#254705';
+    darkGreenTheme.ScrollbarThumbColor = '#3a7206';
+    darkGreenTheme.ScrollbarThumbHoverColor = '#438605';
+    options.Themes.push(darkGreenTheme);
+
+    const darkBlueTheme = new Theme();
+    darkBlueTheme.Name = "DarkBlue"
+    darkBlueTheme.BackgroundColor = '#02001f';
+    darkBlueTheme.MainColor = '#0e00d3';
+    darkBlueTheme.MainColorShadow1 = '#090083';
+    darkBlueTheme.MainColorShadow2 = '#080075';
+    darkBlueTheme.MainColorShadow3 = '#070066';
+    darkBlueTheme.MainColorShadow4 = '#050052';
+    darkBlueTheme.ScrollbarThumbColor = '#06005f';
+    darkBlueTheme.ScrollbarThumbHoverColor = '#090086';
+    options.Themes.push(darkBlueTheme);
+
+    const midnightBlueTheme = new Theme();
+    midnightBlueTheme.Name = "MidnightBlue"
+    midnightBlueTheme.BackgroundColor = '#080077';
+    midnightBlueTheme.MainColor = '#a9b6ff';
+    midnightBlueTheme.MainColorShadow1 = '#7268ff';
+    midnightBlueTheme.MainColorShadow2 = '#5c50ff';
+    midnightBlueTheme.MainColorShadow3 = '#3e31ff';
+    midnightBlueTheme.MainColorShadow4 = '#2515ff';
+    midnightBlueTheme.ScrollbarThumbColor = '#3c2eff';
+    midnightBlueTheme.ScrollbarThumbHoverColor = '#685dff';
+    options.Themes.push(midnightBlueTheme);
+
+    const darkRedTheme = new Theme();
+    darkRedTheme.Name = "DarkRed"
+    darkRedTheme.BackgroundColor = '#3a0000';
+    darkRedTheme.MainColor = '#d80000';
+    darkRedTheme.MainColorShadow1 = '#cc0000';
+    darkRedTheme.MainColorShadow2 = '#b40000';
+    darkRedTheme.MainColorShadow3 = '#970000';
+    darkRedTheme.MainColorShadow4 = '#720000';
+    darkRedTheme.ScrollbarThumbColor = '#970000';
+    darkRedTheme.ScrollbarThumbHoverColor = '#d80000';
+    options.Themes.push(darkRedTheme);
+
+    const characterCountRegex = /\S/g;
+    const wordCountRegex = /\s/g;
+    const lineCountRegex = /\r\n|\r|\n/g;
+
+    var fileHandle;
+    var file;
+
+    var textarea = null;
+
+    var filenamespan = null;
+    var statusCharactersCountValue = null;
+    var statusWordsCountValue = null;
+    var statusLinesCountValue = null;
+
+    var textModified = false;
+    var root = document.documentElement;
+
+    var optionsDiv;
+    var showOptions = false;
+
+    var buttonSave;
+
+    function initializeElements() {
+        textarea = document.getElementById("main-textarea");
+        filenamespan = document.getElementById("status-file-name");
+        optionsDiv = document.getElementById("options-container")
+
+        statusCharactersCountValue = document.getElementById("status-characters-count-value");
+        statusWordsCountValue = document.getElementById("status-words-count-value");
+        statusLinesCountValue = document.getElementById("status-lines-count-value");
+
+        buttonSave = document.getElementById("button-save")
+
+        textarea.addEventListener("input", event => {
+            const target = event.currentTarget;
+
+            calculateAndDisplayStats();
+            setModified(true);
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if(fileHandle && textModified) {
+                    writeFile(fileHandle, textarea.value);
+                }
+            }
+        });
+    }
+
+    function setTheme(theme){
+        root.style.setProperty('--background-color', theme.BackgroundColor);
+        root.style.setProperty('--main-color', theme.MainColor);
+        root.style.setProperty('--main-color-shadow-1', theme.MainColorShadow1);
+        root.style.setProperty('--main-color-shadow-2', theme.MainColorShadow2);
+        root.style.setProperty('--main-color-shadow-3', theme.MainColorShadow3);
+        root.style.setProperty('--main-color-shadow-4', theme.MainColorShadow4);
+        root.style.setProperty('--scrollbar-thumb-color', theme.ScrollbarThumbColor);
+        root.style.setProperty('--scrollbar-thumb-hover-color', theme.ScrollbarThumbHoverColor);
+    }
+
+    async function writeFile(fileHandle, contents) {
+        const writable = await fileHandle.createWritable();
+        await writable.write(contents);
+        await writable.close();
+        setModified(false);
+    }
+
+    function setModified(modified){
+        textModified = modified;
+        if(modified==true){
+            buttonSave.innerText = "SAVE*";
+        } else {
+            buttonSave.innerText = "SAVE";
+        }
+    }
+
+    function calculateAndDisplayStats(){
+        var characterCount = [...textarea.value.matchAll(characterCountRegex)].length;
+            var wordCount = [...textarea.value.matchAll(wordCountRegex)].length;
+            var lineCount = [...textarea.value.matchAll(lineCountRegex)].length;
+
+            statusCharactersCountValue.textContent = characterCount;
+            statusWordsCountValue.textContent = wordCount;
+            statusLinesCountValue.textContent = lineCount;
+    }
+
+    function toggleOptionsPanelVisibility() {
+        if(!showOptions){
+                showOptions = true;
+                optionsDiv.style.display = "block";
+            } else {
+                showOptions = false;
+                optionsDiv.style.display = "none";
+            }
+    }
+
+    async function showNewFileDialog() {
+        fileHandle = await window.showSaveFilePicker();
+        file = await fileHandle.getFile();
+        textarea.value = await file.text();
+        filenamespan.textContent = file.name;
+        calculateAndDisplayStats();
+    }
+
+    async function showOpenFileDialog() {
+        [fileHandle] = await window.showOpenFilePicker();
+        file = await fileHandle.getFile();
+        textarea.value = await file.text();
+        filenamespan.textContent = file.name;
+        calculateAndDisplayStats();
+        setModified(false);
+    }
+
+    async function saveFile() {
+        await writeFile(fileHandle, textarea.value);
+    }
+
+    function setGlowOn() {
+        root.style.setProperty('--shadow-from', '7px');
+        root.style.setProperty('--shadow-to', '5px');
+    }
+
+    function setGlowOff() {
+        root.style.setProperty('--shadow-from', '0px');
+        root.style.setProperty('--shadow-to', '0px');
+    }
+
+
+</script>
+
+
+<div class="main-container">
+    <textarea id="main-textarea" class="glow" spellcheck="false" style="display: block;"></textarea>
+    <div class="status-container" >
+        <div style="border-style: none;border-color: var(--main-color);">
+            <span id="status-characters-count-label" class="glow">CHARACTERS:</span>
+            <span id="status-characters-count-value" class="glow">0</span>
+            <span>&nbsp;</span>
+            <span id="status-words-count-label" class="glow">WORDS:</span>
+            <span id="status-words-count-value" class="glow">0</span>
+            <span>&nbsp;</span>
+            <span id="status-lines-count-label" class="glow">LINES:</span>
+            <span id="status-lines-count-value" class="glow">0</span>
+            <span>&nbsp;</span>
+            <span id="status-file-label" class="glow">FILE:</span>
+            <span id="status-file-name" class="glow">...</span>
+            <span>&nbsp;</span>
+            <button id="button-new" class="button glow" onclick="showNewFileDialog()">NEW</button>
+            <span>&nbsp;</span>
+            <button id="button-open" class="button glow" onclick="showOpenFileDialog()">OPEN</button>
+            <span>&nbsp;</span>
+            <button id="button-save" class="button glow" onclick="saveFile()">SAVE</button>
+            <span>&nbsp;</span>
+            <button id="button-options" class="button glow" onclick="toggleOptionsPanelVisibility()">OPTIONS</button>
+        </div>
+    </div>
+</div>
+
+<div id="options-container" class="options-container">
+    <div class="options-content">        
+        <span id="options-content-theme-label" class="glow">THEME: </span>
+        <button id="button-amber" class="button glow" onclick="setTheme(amberTheme)">AMBER</button>
+        <button id="button-dark-green" class="button glow" onclick="setTheme(darkGreenTheme)">DARK GREEN</button>
+        <button id="button-dark-blue" class="button glow" onclick="setTheme(darkBlueTheme)">DARK BLUE</button>
+        <button id="button-dark-red" class="button glow" onclick="setTheme(darkRedTheme)">DARK RED</button>
+        <button id="button-midnight-blue" class="button glow" onclick="setTheme(midnightBlueTheme)">MIDNIGHT BLUE</button>
+        <br><br><br>
+        <span id="options-content-flow-label" class="glow">GLOW: </span>
+        <button id="button-glow-on" class="button glow" onclick="setGlowOn()">ON</button>
+        <button id="button-glow-off" class="button glow" onclick="setGlowOff()">OFF</button>
+        <br><br><br>
+        <button id="button-options" class="button glow" onclick="toggleOptionsPanelVisibility()">CLOSE</button>
+    </div>
+</div>
+
+</body>
+</html> 
